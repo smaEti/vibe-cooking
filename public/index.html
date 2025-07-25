@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Recipe App</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>AI Recipe App</h1>
+  </header>
+
+  <section id="preferences">
+    <h2>Dietary Preferences</h2>
+    <div id="dietary-options"></div>
+  </section>
+
+  <section id="search">
+    <h2>Find Recipes by Ingredients</h2>
+    <textarea id="ingredients-input" placeholder="Enter ingredients, separated by commas"></textarea>
+    <label for="serving-size-ing">Serving Size:</label>
+    <input type="number" id="serving-size-ing" min="1" max="20" value="4" />
+    <button id="search-ingredients-btn">Find Recipes</button>
+
+    <h2>Find Recipe Variations by Name</h2>
+    <input type="text" id="food-name-input" placeholder="Enter food name" />
+    <label for="serving-size-name">Serving Size:</label>
+    <input type="number" id="serving-size-name" min="1" max="20" value="4" />
+    <button id="search-name-btn">Find Variations</button>
+  </section>
+
+  <section id="results">
+    <h2>Results</h2>
+    <div id="results-container"></div>
+    <div id="recipe-details"></div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
