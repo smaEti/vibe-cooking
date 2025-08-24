@@ -157,7 +157,6 @@ export class AIService {
           {
             model: config.ai.model,
             messages: [{ role: 'user', content: prompt }],
-            max_tokens: config.ai.maxTokens,
             temperature: config.ai.temperature, response_format: {
               type: "json_schema",
               json_schema: {

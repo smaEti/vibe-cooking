@@ -8,34 +8,109 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <h1>AI Recipe App</h1>
+  <header class="site-header">
+    <div class="container">
+      <h1>AI Recipe App</h1>
+      <nav>
+        <button id="tab-search" class="tab active">Search</button>
+        <button id="tab-recipes" class="tab">Recipes</button>
+        <button id="tab-preferences" class="tab">Preferences</button>
+        <button id="tab-health" class="tab">Health</button>
+      </nav>
+    </div>
   </header>
 
-  <section id="preferences">
-    <h2>Dietary Preferences</h2>
-    <div id="dietary-options"></div>
-  </section>
+  <main class="container">
+    <section id="panel-search" class="panel">
+      <h2>Find Recipes</h2>
+      <div class="card">
+        <h3>By Ingredients</h3>
+        <textarea id="ingredients-input" placeholder="Enter ingredients, separated by commas"></textarea>
+        <div class="row">
+          <label>Serving Size: <input type="number" id="serving-size-ing" min="1" max="20" value="4" /></label>
+          <button id="search-ingredients-btn">Find Recipes</button>
+        </div>
+      </div>
 
-  <section id="search">
-    <h2>Find Recipes by Ingredients</h2>
-    <textarea id="ingredients-input" placeholder="Enter ingredients, separated by commas"></textarea>
-    <label for="serving-size-ing">Serving Size:</label>
-    <input type="number" id="serving-size-ing" min="1" max="20" value="4" />
-    <button id="search-ingredients-btn">Find Recipes</button>
+      <div class="card">
+        <h3>By Food Name</h3>
+        <input type="text" id="food-name-input" placeholder="e.g. spaghetti carbonara" />
+        <div class="row">
+          <label>Serving Size: <input type="number" id="serving-size-name" min="1" max="20" value="4" /></label>
+          <button id="search-name-btn">Find Variations</button>
+        </div>
+      </div>
 
-    <h2>Find Recipe Variations by Name</h2>
-    <input type="text" id="food-name-input" placeholder="Enter food name" />
-    <label for="serving-size-name">Serving Size:</label>
-    <input type="number" id="serving-size-name" min="1" max="20" value="4" />
-    <button id="search-name-btn">Find Variations</button>
-  </section>
+      <div class="card">
+        <h3>Popular / Search</h3>
+        <div class="row">
+          <label>Search: <input type="text" id="search-query" placeholder="Search recipes"/></label>
+          <button id="search-btn">Search</button>
+        </div>
+        <div class="row">
+          <label>Popular limit: <input type="number" id="popular-limit" min="1" max="50" value="10" /></label>
+          <button id="popular-btn">Get Popular</button>
+        </div>
+      </div>
 
-  <section id="results">
-    <h2>Results</h2>
-    <div id="results-container"></div>
-    <div id="recipe-details"></div>
-  </section>
+      <div id="dietary-options" class="dietary"></div>
+    </section>
+
+    <section id="panel-recipes" class="panel hidden">
+      <h2>Results</h2>
+      <div id="results-container" class="card results"></div>
+      <div id="recipe-details" class="card details"></div>
+    </section>
+
+    <section id="panel-preferences" class="panel hidden">
+      <h2>User Preferences</h2>
+      <div class="card">
+        <h3>Create / Replace Preferences</h3>
+        <textarea id="preferences-body" placeholder='Paste full JSON for preferences (see README)'></textarea>
+        <button id="save-preferences-btn">Save Preferences (POST)</button>
+      </div>
+
+      <div class="card">
+        <h3>Update Preferences (PUT)</h3>
+        <input type="text" id="pref-user-id" placeholder="User ID" />
+        <textarea id="preferences-update-body" placeholder='JSON partial to update'></textarea>
+        <button id="update-preferences-btn">Update Preferences</button>
+      </div>
+
+      <div class="card">
+        <h3>Check Restriction</h3>
+        <input type="text" id="check-user-id" placeholder="User ID" />
+        <select id="restriction-select"></select>
+        <button id="check-restriction-btn">Check</button>
+      </div>
+
+      <div class="card">
+        <h3>Get / Delete Preferences</h3>
+        <input type="text" id="user-id-get" placeholder="User ID" />
+        <div class="row">
+          <button id="get-preferences-btn">Get</button>
+          <button id="delete-preferences-btn">Delete</button>
+        </div>
+      </div>
+
+      <div id="preferences-result" class="card"></div>
+    </section>
+
+    <section id="panel-health" class="panel hidden">
+      <h2>Health & Config</h2>
+      <div class="row">
+        <button id="health-btn">Get Health</button>
+        <button id="config-btn">Get Config</button>
+      </div>
+      <div id="health-result" class="card"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>AI Recipe App — Frontend</small>
+    </div>
+  </footer>
 
   <script src="script.js"></script>
 </body>
