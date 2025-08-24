@@ -1,16 +1,16 @@
 import OpenAI from 'openai';
 import axios from 'axios';
-import { config, getAIHeaders, getAIRequestConfig } from '@/server/utils/config';
-import { 
-  AIRecipeRequest, 
-  AIRecipeResponse, 
-  RecipeSuggestion, 
+import { config, getAIHeaders, getAIRequestConfig } from '../utils/config';
+import {
+  AIRecipeRequest,
+  AIRecipeResponse,
+  RecipeSuggestion,
   RecipeVariation,
   DietaryRestriction,
   NutritionalInfo,
   IngredientSubstitution,
-  AIServiceError 
-} from '@/types';
+  AIServiceError
+} from '../../types';
 
 export class AIService {
   private openai: OpenAI | null = null;
@@ -23,8 +23,8 @@ export class AIService {
   private initializeClient(): void {
     try {
       // Check if the API URL is OpenAI compatible
-      this.isOpenAICompatible = config.ai.apiUrl.includes('openai.com') || 
-                                config.ai.apiUrl.includes('api.openai.com');
+      this.isOpenAICompatible = config.ai.apiUrl.includes('openai.com') ||
+        config.ai.apiUrl.includes('api.openai.com');
 
       if (this.isOpenAICompatible) {
         this.openai = new OpenAI({
@@ -46,10 +46,11 @@ export class AIService {
     cuisinePreference?: string
   ): Promise<RecipeSuggestion[]> {
     const prompt = this.buildIngredientsPrompt(ingredients, dietaryRestrictions, servingSize, cuisinePreference);
-    
+
     try {
       const response = await this.makeAIRequest(prompt);
-      return this.parseRecipeSuggestions(response);
+      console.log("response", response)
+      return this.parseRecipeSuggestions(response.replace(/```json|```/g, '').trim());
     } catch (error) {
       throw new AIServiceError('Failed to generate recipes by ingredients', 'GENERATION_FAILED', 500);
     }
@@ -62,10 +63,10 @@ export class AIService {
     servingSize: number = 4
   ): Promise<RecipeVariation[]> {
     const prompt = this.buildFoodNamePrompt(foodName, dietaryRestrictions, servingSize);
-    
+
     try {
       const response = await this.makeAIRequest(prompt);
-      return this.parseRecipeVariations(response);
+      return this.parseRecipeVariations(response.replace(/```json|```/g, '').trim());
     } catch (error) {
       throw new AIServiceError('Failed to generate recipe variations', 'GENERATION_FAILED', 500);
     }
@@ -79,10 +80,10 @@ export class AIService {
     servingSize: number = 4
   ): Promise<{ instructions: string[]; cookingTime: number; difficulty: number }> {
     const prompt = this.buildInstructionsPrompt(recipeName, ingredients, dietaryRestrictions, servingSize);
-    
+
     try {
       const response = await this.makeAIRequest(prompt);
-      return this.parseInstructions(response);
+      return this.parseInstructions(response.replace(/```json|```/g, '').trim());
     } catch (error) {
       throw new AIServiceError('Failed to generate recipe instructions', 'GENERATION_FAILED', 500);
     }
@@ -95,10 +96,10 @@ export class AIService {
     servingSize: number = 4
   ): Promise<NutritionalInfo> {
     const prompt = this.buildNutritionPrompt(recipeName, ingredients, servingSize);
-    
+
     try {
       const response = await this.makeAIRequest(prompt);
-      return this.parseNutritionalInfo(response, servingSize);
+      return this.parseNutritionalInfo(response.replace(/```json|```/g, '').trim(), servingSize);
     } catch (error) {
       throw new AIServiceError('Failed to generate nutritional information', 'GENERATION_FAILED', 500);
     }
@@ -111,10 +112,10 @@ export class AIService {
     recipeContext: string
   ): Promise<IngredientSubstitution[]> {
     const prompt = this.buildSubstitutionPrompt(ingredient, dietaryRestrictions, recipeContext);
-    
+
     try {
       const response = await this.makeAIRequest(prompt);
-      return this.parseSubstitutions(response, dietaryRestrictions);
+      return this.parseSubstitutions(response.replace(/```json|```/g, '').trim(), dietaryRestrictions);
     } catch (error) {
       throw new AIServiceError('Failed to generate ingredient substitutions', 'GENERATION_FAILED', 500);
     }
@@ -128,10 +129,10 @@ export class AIService {
     dietaryRestrictions: DietaryRestriction[]
   ): Promise<{ compatible: boolean; issues: string[]; suggestions: string[] }> {
     const prompt = this.buildDietaryAnalysisPrompt(recipeName, ingredients, instructions, dietaryRestrictions);
-    
+
     try {
       const response = await this.makeAIRequest(prompt);
-      return this.parseDietaryAnalysis(response);
+      return this.parseDietaryAnalysis(response.replace(/```json|```/g, '').trim());
     } catch (error) {
       throw new AIServiceError('Failed to analyze dietary compatibility', 'ANALYSIS_FAILED', 500);
     }
@@ -157,7 +158,17 @@ export class AIService {
             model: config.ai.model,
             messages: [{ role: 'user', content: prompt }],
             max_tokens: config.ai.maxTokens,
-            temperature: config.ai.temperature
+            temperature: config.ai.temperature, response_format: {
+              type: "json_schema",
+              json_schema: {
+                name: "recipe_suggestions",
+                strict: true,
+                schema: {
+                  type: "array",
+                  items: { type: "object", additionalProperties: true }
+                }
+              }
+            }
           },
           {
             headers: getAIHeaders(),
@@ -180,11 +191,11 @@ export class AIService {
     servingSize: number,
     cuisinePreference?: string
   ): string {
-    const restrictionsText = dietaryRestrictions.length > 0 
+    const restrictionsText = dietaryRestrictions.length > 0
       ? `Dietary restrictions: ${dietaryRestrictions.join(', ')}`
       : 'No dietary restrictions';
 
-    const cuisineText = cuisinePreference 
+    const cuisineText = cuisinePreference
       ? `Preferred cuisine: ${cuisinePreference}`
       : 'Any cuisine';
 
@@ -230,7 +241,7 @@ Ensure all recipes are practical, safe, and delicious.`;
     dietaryRestrictions: DietaryRestriction[],
     servingSize: number
   ): string {
-    const restrictionsText = dietaryRestrictions.length > 0 
+    const restrictionsText = dietaryRestrictions.length > 0
       ? `Dietary restrictions: ${dietaryRestrictions.join(', ')}`
       : 'No dietary restrictions';
 

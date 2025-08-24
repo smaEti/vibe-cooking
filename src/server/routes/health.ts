@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { database } from '@/server/models/database';
-import { config } from '@/server/utils/config';
+import { database } from '../models/database';
+import { config } from '../utils/config';
 
 const router = Router();
 

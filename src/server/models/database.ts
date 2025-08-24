@@ -1,5 +1,5 @@
 import sqlite3 from 'sqlite3';
-import { config } from '@/server/utils/config';
+import { config } from '../utils/config';
 import path from 'path';
 import fs from 'fs';
 

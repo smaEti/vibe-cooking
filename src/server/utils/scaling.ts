@@ -1,4 +1,4 @@
-import { Ingredient, NutritionalInfo } from '@/types';
+import { Ingredient, NutritionalInfo } from '../../types';
 
 export class ScalingUtils {
   /**

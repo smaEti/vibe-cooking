@@ -1,11 +1,11 @@
 import { Router, Request, Response } from 'express';
-import { DietaryProfileModel } from '@/server/models/DietaryProfile';
+import { DietaryProfileModel } from '../models/DietaryProfile';
 import { 
   DietaryRestriction,
   UserPreferencesRequest,
   RecipeError,
   ValidationError 
-} from '@/types';
+} from '../../types';
 import Joi from 'joi';
 
 const router = Router();

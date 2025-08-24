@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { recipeService } from '@/server/services/recipeService';
+import { recipeService } from '../services/recipeService';
 import { 
   CreateRecipeRequest, 
   ScaleRecipeRequest, 
@@ -7,7 +7,7 @@ import {
   DietaryRestriction,
   RecipeError,
   ValidationError 
-} from '@/types';
+} from '../../types';
 import Joi from 'joi';
 
 const router = Router();

@@ -1,6 +1,6 @@
 import { aiService } from './aiService';
-import { RecipeModel, RecipeCacheModel } from '@/server/models/Recipe';
-import { DietaryProfileModel, NutritionModel, IngredientSubstitutionModel } from '@/server/models/DietaryProfile';
+import { RecipeModel, RecipeCacheModel } from '../models/Recipe';
+import { DietaryProfileModel, NutritionModel, IngredientSubstitutionModel } from '../models/DietaryProfile';
 import { 
   Recipe, 
   RecipeSuggestion, 
@@ -13,7 +13,7 @@ import {
   NutritionalInfo,
   IngredientSubstitution,
   RecipeError 
-} from '@/types';
+} from '../../types';
 
 export class RecipeService {
   // Generate recipes by ingredients with caching
@@ -49,7 +49,8 @@ export class RecipeService {
         dietaryRestrictions,
         servingSize,
         cuisinePreference
-      );
+      );  
+      console.log(suggestions)
 
       // Cache the results
       for (const suggestion of suggestions) {

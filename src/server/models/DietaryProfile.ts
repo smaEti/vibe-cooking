@@ -6,7 +6,7 @@ import {
   NutritionalGoals,
   NutritionalInfo,
   RecipeError
-} from '@/types';
+} from '../../types';
 
 export class DietaryProfileModel {
   // Create or update dietary profile

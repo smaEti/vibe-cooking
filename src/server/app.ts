@@ -6,13 +6,13 @@ import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
 
-import { config, validateConfig } from '@/server/utils/config';
-import { database } from '@/server/models/database';
+import { config, validateConfig } from './utils/config';
+import { database } from './models/database';
 
 // Import routes
-import recipesRouter from '@/server/routes/recipes';
-import preferencesRouter from '@/server/routes/preferences';
-import healthRouter from '@/server/routes/health';
+import recipesRouter from './routes/recipes';
+import preferencesRouter from './routes/preferences';
+import healthRouter from './routes/health';
 
 // Validate configuration on startup
 try {
@@ -129,7 +129,7 @@ app.get('*', (req, res) => {
       path: req.path
     });
   }
-  
+
   // Serve index.html for all other routes (SPA routing)
   res.sendFile(path.join(__dirname, '../../public/index.html'));
 });
@@ -137,7 +137,7 @@ app.get('*', (req, res) => {
 // Global error handler
 app.use((error: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Global error handler:', error);
-  
+
   // Handle JSON parsing errors
   if (error instanceof SyntaxError && 'body' in error) {
     return res.status(400).json({
@@ -145,7 +145,7 @@ app.use((error: any, req: express.Request, res: express.Response, next: express.
       code: 'INVALID_JSON'
     });
   }
-  
+
   // Handle other errors
   res.status(500).json({
     error: 'Internal server error',
@@ -166,14 +166,14 @@ app.use('/api/*', (req, res) => {
 // Graceful shutdown handling
 const gracefulShutdown = async (signal: string) => {
   console.log(`\n${signal} received. Starting graceful shutdown...`);
-  
+
   try {
     // Close database connection
     await database.close();
     console.log('✅ Database connection closed');
-    
+
     // Perform any other cleanup here
-    
+
     console.log('✅ Graceful shutdown completed');
     process.exit(0);
   } catch (error) {
@@ -198,17 +198,24 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 // Start server
-const startServer = async () => {
+export const startServer = async () => {
   try {
     // Wait for database to be ready
     const dbHealthy = await database.healthCheck();
     if (!dbHealthy) {
       throw new Error('Database health check failed');
     }
-    
+
     // Clean up old cache entries on startup
     await database.cleanupCache();
-    
+
     const server = app.listen(config.port, () => {
       console.log(`
 🚀 AI Recipe App Server Started
+‍‍`)
+    });
+  } catch (error) {
+    console.log("Error when starting up", error)
+  }
+}
+

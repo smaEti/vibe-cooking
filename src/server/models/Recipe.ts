@@ -7,7 +7,7 @@ import {
   DietaryRestriction,
   RecipeCache,
   RecipeError 
-} from '@/types';
+} from '../../types';
 
 export class RecipeModel {
   // Create a new recipe
